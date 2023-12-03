@@ -33,7 +33,7 @@ module.exports = async function (context, req) {
 		};
 	}
 	finally {
-		if(browser != null || browser === undefined)
+		if(browser != null || browser !== undefined)
 		{
 			browser.disconnect();
 			await browser.close();
