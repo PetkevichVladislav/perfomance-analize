@@ -33,8 +33,11 @@ module.exports = async function (context, req) {
 		};
 	}
 	finally {
-		browser.disconnect();
-		await browser.close();
+		if(browser != null || browser === undefined)
+		{
+			browser.disconnect();
+			await browser.close();
+		}
 	}
 };
 
@@ -42,10 +45,11 @@ async function getBrowser(context) {
 	try {
 
 		context.log("Start to create browser");
-		var browser = await puppeteer.launch({
-			headless: true,
-			args: ['--no-sandbox']
-		});
+		// const options = {
+		// 	headless: true,
+		// 	args: ['--no-sandbox']
+		// };
+		var browser = await puppeteer.launch();
 
 		context.log("Browser is created");
 
