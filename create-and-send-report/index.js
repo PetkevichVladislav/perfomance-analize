@@ -147,10 +147,10 @@ async function sendEmailWithReport(context, email, body) {
 
 		context.log("Start to sending report:" + jsonData);
 		const response = await axios.post(LOGIC_APP_URL, jsonData);
-		context.log.error("Response from sending request:" + response);
+		context.log.error("Response from sending request:" + JSON.stringify(response));
 
 	} catch (error) {
-		context.log.error('Error during sending report:', error.message);
+		context.log.error('Error during sending report:', JSON.stringify(error.message));
 		throw error;
 	}
 }
