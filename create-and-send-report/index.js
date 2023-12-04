@@ -69,6 +69,7 @@ async function getLightHouseReport(context, browser, url) {
 			output: 'json',
 			logLevel: 'info',
 			//onlyCategories: [ 'seo', 'performance', 'accessibility', 'best-practices' ]
+			
 		});
 
 		context.log("Lighthouse report generated:" + lhr);
