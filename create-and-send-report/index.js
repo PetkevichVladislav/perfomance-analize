@@ -48,7 +48,7 @@ async function getBrowser(context) {
 		const options = {
 			headless: true,
 			args: ['--no-sandbox'],
-			executablePath: './chrome-linux/chrome'
+			//executablePath: './chrome-linux/chrome'
 		};
 		var browser = await puppeteer.launch(options);
 
@@ -69,7 +69,7 @@ async function getLightHouseReport(context, browser, url) {
 			output: 'json',
 			logLevel: 'info',
 			//onlyCategories: [ 'seo', 'performance', 'accessibility', 'best-practices' ]
-			
+
 		});
 
 		context.log("Lighthouse report generated:" + lhr);
