@@ -47,7 +47,8 @@ async function getBrowser(context) {
 		context.log("Start to create browser");
 		const options = {
 			headless: true,
-			args: ['--no-sandbox']
+			args: ['--no-sandbox'],
+			executablePath: './chrome-linux/chrome'
 		};
 		var browser = await puppeteer.launch(options);
 
