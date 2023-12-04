@@ -1,5 +1,6 @@
 *.zip
 .zip
+cache/
 
 # Logs
 logs

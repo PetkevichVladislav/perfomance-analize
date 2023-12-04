@@ -1,4 +1,5 @@
 const puppeteer = require("puppeteer");
+require("puppeteer-core");
 const lighthouse = require('lighthouse');
 const OpenAI = require('openai');
 const axios = require('axios');
@@ -44,11 +45,11 @@ async function getBrowser(context) {
 	try {
 
 		context.log("Start to create browser");
-		// const options = {
-		// 	headless: true,
-		// 	args: ['--no-sandbox']
-		// };
-		var browser = await puppeteer.launch();
+		const options = {
+			headless: true,
+			args: ['--no-sandbox']
+		};
+		var browser = await puppeteer.launch(options);
 
 		context.log("Browser is created");
 
