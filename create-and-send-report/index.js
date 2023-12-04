@@ -19,7 +19,7 @@ module.exports = async function (context, req) {
 		var report = await getLightHouseReport(context, browser, url);
 		var prompt = createPromptFromReports(context, report, url);
 		var recommendations = await generateOpenAIRecommendation(context, prompt);
-		sendEmailWithReport(context, email, recommendations);
+		sendEmailWithReport(context, email, url, recommendations);
 		context.res = {
 			status: 200,
 			body: null,
@@ -139,12 +139,12 @@ function createPromptFromReports(context, report, url) {
 	}
 }
 
-async function sendEmailWithReport(context, email, body) {
+async function sendEmailWithReport(context, email, url, body) {
 	try {
 		var jsonData = {
 			email: email,
 			report: body,
-			subject: "Perfomance report for " + LOGIC_APP_URL 
+			subject: "Perfomance report for " + url 
 		};
 
 		context.log("Start to sending report:" + jsonData);
