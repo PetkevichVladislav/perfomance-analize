@@ -48,7 +48,7 @@ async function getBrowser(context) {
 		const options = {
 			headless: true,
 			args: ['--no-sandbox'],
-			executablePath: './chrome-linux/chrome'
+			//executablePath: './chrome-linux/chrome'
 		};
 		var browser = await puppeteer.launch(options);
 
