@@ -7,8 +7,8 @@ const OPEN_AI_KEY = process.env["OPEN_AI_KEY"];
 const LOGIC_APP_URL = process.env["LOGIC_APP_URL"];
 
 module.exports = async function (context, req) {
-	context.log(`OPEN_AI_KEY value is not null: ${!(OPEN_AI_KEY === undefined || OPEN_AI_KEY === null)}`);
-	context.log(`LOGIC_APP_URL value is not null: ${!(LOGIC_APP_URL === undefined || LOGIC_APP_URL === null)}`);
+	context.log(`OPEN_AI_KEY value defined: ${!(OPEN_AI_KEY === undefined || OPEN_AI_KEY === null)}`);
+	context.log(`LOGIC_APP_URL value defined: ${!(LOGIC_APP_URL === undefined || LOGIC_APP_URL === null)}`);
 	var url = req.query.url || (req.body && req.body.url);
 	var email = req.query.email || (req.body && req.body.email);
 	context.log(`Analyzing URL ${url}`);
@@ -16,16 +16,16 @@ module.exports = async function (context, req) {
 	try {
 		var browser = await getBrowser(context);
 		var report = await getLightHouseReport(context, browser, url);
-		var prompt = createPromtFromReports(context, report, url);
-		var recomendations = await generateOpenAIRecomendation(context, prompt);
-		sendEmalWithReport(context, email, recomendations);
+		var prompt = createPromptFromReports(context, report, url);
+		var recommendations = await generateOpenAIRecommendation(context, prompt);
+		sendEmailWithReport(context, email, recommendations);
 		context.res = {
 			status: 200,
 			body: null,
 		};
 	}
 	catch (error) {
-		context.log.error('Error during perfomance analise run:', error.message);
+		context.log.error('Error during performance analyze run:', error.message);
 
 		context.res = {
 			status: 500,
@@ -33,8 +33,7 @@ module.exports = async function (context, req) {
 		};
 	}
 	finally {
-		if(browser != null || browser !== undefined)
-		{
+		if (browser != null || browser !== undefined) {
 			browser.disconnect();
 			await browser.close();
 		}
@@ -81,7 +80,7 @@ async function getLightHouseReport(context, browser, url) {
 			bestpractices: lhr.categories['best-practices'].score
 			//audits: lhr.audits,
 		};
-		context.log("Lighthouse report formated" + formattedReport);
+		context.log("Lighthouse report formatted" + formattedReport);
 
 		return formattedReport;
 	} catch (error) {
@@ -90,44 +89,44 @@ async function getLightHouseReport(context, browser, url) {
 	}
 }
 
-async function generateOpenAIRecomendation(context, prompt) {
+async function generateOpenAIRecommendation(context, prompt) {
 	try {
-		context.log("Start to create open ai recomendations:" + prompt);
-		const openai = new OpenAI({
+		context.log("Start to create open ai recommendations:" + prompt);
+		const openAiClient = new OpenAI({
 			apiKey: OPEN_AI_KEY,
 		});
-		var recomendations = await sendPromptToOpenAi(context, openai, prompt);
-		context.log("Open ai recomendations created:" + recomendations);
+		var recommendations = await generateOpenAiRecommendations(context, openAiClient, prompt);
+		context.log("Open ai recommendations created:" + recommendations);
 
-		return recomendations;
+		return recommendations;
 	} catch (error) {
-		context.log.error('Error during creating open ai recomendations:', error.message);
+		context.log.error('Error during creating open ai recommendations:', error.message);
 		throw error;
 	}
 }
 
-async function sendPromptToOpenAi(context, openAiClient, prompt) {
+async function generateOpenAiRecommendations(context, openAiClient, prompt) {
 	try {
 		var response = await openAiClient.chat.completions.create({
 			messages: [{ role: "system", content: prompt }],
 			model: "gpt-3.5-turbo",
 		});
 
-		context.log("Getting result from open ai. Recomendations:" + response);
+		context.log("Getting result from open ai. Recommendations:" + response);
 		return response.choices[0].message.content;
 	}
 	catch (error) {
-		context.log.error("Open ai returned error:" + error);
+		context.log.error("Open ai endpoint returned error:" + error);
 		throw error;
 	}
 }
 
-function createPromtFromReports(context, report, url) {
+function createPromptFromReports(context, report, url) {
 	try {
 		context.log("Start to create prompt from report:" + report);
 
-		var rerportAJson = JSON.stringify(report);
-		var prompt = `Analise perfomance report and make list of suggestions base on the report: ${rerportAJson}. At the start of the messaage add message: Perfomance analise for web site: ${url} : `;
+		var reportAJson = JSON.stringify(report);
+		var prompt = `Analyze performance report and make list of suggestions base on the report: ${reportAJson}. At the start of the message add message: Performance analyze for web site: ${url} : `;
 
 		context.log("Prompt created:" + prompt);
 		return prompt;
@@ -137,7 +136,7 @@ function createPromtFromReports(context, report, url) {
 	}
 }
 
-async function sendEmalWithReport(context, email, body) {
+async function sendEmailWithReport(context, email, body) {
 	try {
 		var jsonData = {
 			email: email,
@@ -145,14 +144,11 @@ async function sendEmalWithReport(context, email, body) {
 		};
 
 		context.log("Start to sending report:" + jsonData);
-		try {
-			const response = await axios.post(LOGIC_APP_URL, jsonData);
-			context.log("Response from sending request:" + response.status);
-		} catch (error) {
-			context.log(error);
-		}
+		const response = await axios.post(LOGIC_APP_URL, jsonData);
+		context.log.error("Response from sending request:" + response);
+
 	} catch (error) {
-		context.log.error('Error during seding report:', error.message);
+		context.log.error('Error during sending report:', error.message);
 		throw error;
 	}
 }
