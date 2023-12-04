@@ -25,7 +25,7 @@ module.exports = async function (context, req) {
 		};
 	}
 	catch (error) {
-		context.error('Error during perfomance analise run:', error.message);
+		context.log.error('Error during perfomance analise run:', error.message);
 
 		context.res = {
 			status: 500,
@@ -55,7 +55,7 @@ async function getBrowser(context) {
 
 		return browser;
 	} catch (error) {
-		context.error('Error during creating browser:', error.message);
+		context.log.error('Error during creating browser:', error.message);
 		throw error;
 	}
 }
@@ -85,7 +85,7 @@ async function getLightHouseReport(context, browser, url) {
 
 		return formattedReport;
 	} catch (error) {
-		context.error('Error during Lighthouse run:', error.message);
+		context.log.error('Error during Lighthouse run:', error.message);
 		throw error;
 	}
 }
@@ -101,7 +101,7 @@ async function generateOpenAIRecomendation(context, prompt) {
 
 		return recomendations;
 	} catch (error) {
-		context.error('Error during creating open ai recomendations:', error.message);
+		context.log.error('Error during creating open ai recomendations:', error.message);
 		throw error;
 	}
 }
@@ -117,7 +117,7 @@ async function sendPromptToOpenAi(context, openAiClient, prompt) {
 		return response.choices[0].message.content;
 	}
 	catch (error) {
-		context.error("Open ai returned error:" + error);
+		context.log.error("Open ai returned error:" + error);
 		throw error;
 	}
 }
@@ -132,7 +132,7 @@ function createPromtFromReports(context, report, url) {
 		context.log("Prompt created:" + prompt);
 		return prompt;
 	} catch (error) {
-		context.error('Error during crating prompt:', error.message);
+		context.log.error('Error during crating prompt:', error.message);
 		throw error;
 	}
 }
@@ -152,7 +152,7 @@ async function sendEmalWithReport(context, email, body) {
 			context.log(error);
 		}
 	} catch (error) {
-		context.error('Error during seding report:', error.message);
+		context.log.error('Error during seding report:', error.message);
 		throw error;
 	}
 }
