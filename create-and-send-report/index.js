@@ -126,12 +126,12 @@ async function generateOpenAiRecommendations(context, openAiClient, prompt) {
 
 function createPromptFromReports(context, report, url) {
 	try {
-		context.log("Start to create prompt from report:" + report);
-
 		var reportAJson = JSON.stringify(report);
+		context.log("Start to create prompt from report:" + reportAJson);
+
 		var prompt = `Analyze performance report and make list of suggestions base on the report: ${reportAJson}. At the start of the message add message: Performance analyze for web site: ${url} : `;
 
-		context.log("Prompt created:" + prompt);
+		context.log("Prompt created:" + reportAJson);
 		return prompt;
 	} catch (error) {
 		context.log.error('Error during crating prompt:', error.message);
@@ -144,11 +144,12 @@ async function sendEmailWithReport(context, email, body) {
 		var jsonData = {
 			email: email,
 			report: body,
+			subject: "Perfomance report for " + LOGIC_APP_URL 
 		};
 
 		context.log("Start to sending report:" + jsonData);
 		const response = await axios.post(LOGIC_APP_URL, jsonData);
-		context.log.error("Response from sending request:" + JSON.stringify(response));
+		context.log("Response from sending request:" + JSON.stringify(response));
 
 	} catch (error) {
 		context.log.error('Error during sending report:', JSON.stringify(error.message));
