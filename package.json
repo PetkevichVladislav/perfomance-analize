@@ -1,5 +1,5 @@
 {
-  "name": "perfomance-analize",
+  "name": "performance-analyze",
   "version": "1.0.0",
   "description": "",
   "scripts": {
@@ -7,10 +7,13 @@
     "test": "echo \"No tests yet...\""
   },
   "dependencies": {
-    "axios": "^1.6.2",
-    "lighthouse": "^6.5.0",
-    "openai": "^4.20.1",
-    "puppeteer": "^21.5.2",
-    "puppeteer-core": "^21.5.2"
+    "@azure/functions": "^4.0.0",
+    "@azure/storage-blob": "^12.23.0",
+    "axios": "^1.7.2",
+    "dotenv": "^16.4.5",
+    "lighthouse": "^12.0.0",
+    "openai": "^4.48.1",
+    "puppeteer": "^22.10.0",
+    "puppeteer-core": "^22.10.0"
   }
 }
